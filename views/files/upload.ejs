@@ -1,0 +1,61 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title mb-4">
+            <i class="bi bi-cloud-upload"></i> Upload File
+          </h2>
+
+          <% if (currentFolder) { %>
+            <div class="alert alert-info">
+              <i class="bi bi-folder"></i> Uploading to: <strong><%= currentFolder.name %></strong>
+            </div>
+          <% } %>
+
+          <form action="/files/upload" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="folderId" value="<%= currentFolder ? currentFolder.id : '' %>">
+            
+            <div class="mb-3">
+              <label for="file" class="form-label">Select File</label>
+              <input 
+                type="file" 
+                class="form-control" 
+                id="file" 
+                name="file" 
+                required
+              >
+              <div class="form-text">
+                Max file size: 10 MB. Allowed types: images, PDFs, documents, archives, videos, audio
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-success">
+                <i class="bi bi-upload"></i> Upload
+              </button>
+              <a href="/folders<%= currentFolder ? '?folder=' + currentFolder.id : '' %>" class="btn btn-secondary">
+                Cancel
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- File Upload Guidelines -->
+      <div class="card mt-4">
+        <div class="card-body">
+          <h5 class="card-title">
+            <i class="bi bi-info-circle"></i> Upload Guidelines
+          </h5>
+          <ul class="mb-0">
+            <li>Maximum file size: 10 MB</li>
+            <li>Supported formats: JPEG, PNG, GIF, PDF, DOC, DOCX, TXT, ZIP, RAR, MP4, MP3, MOV</li>
+            <li>Files are securely stored in the cloud</li>
+            <li>You can download your files anytime</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

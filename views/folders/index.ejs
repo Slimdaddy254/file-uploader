@@ -1,0 +1,164 @@
+<div class="container mt-4">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/folders"><i class="bi bi-house-door"></i> Home</a>
+      </li>
+      <% if (breadcrumbs.length > 0) { %>
+        <% breadcrumbs.forEach((crumb, index) => { %>
+          <% if (index === breadcrumbs.length - 1) { %>
+            <li class="breadcrumb-item active" aria-current="page"><%= crumb.name %></li>
+          <% } else { %>
+            <li class="breadcrumb-item">
+              <a href="/folders?folder=<%= crumb.id %>"><%= crumb.name %></a>
+            </li>
+          <% } %>
+        <% }); %>
+      <% } %>
+    </ol>
+  </nav>
+
+  <!-- Actions -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>
+      <i class="bi bi-folder-fill text-primary"></i>
+      <%= currentFolder ? currentFolder.name : 'My Files' %>
+    </h2>
+    <div>
+      <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newFolderModal">
+        <i class="bi bi-folder-plus"></i> New Folder
+      </button>
+      <a href="/files/upload<%= currentFolder ? '?folder=' + currentFolder.id : '' %>" class="btn btn-success">
+        <i class="bi bi-cloud-upload"></i> Upload File
+      </a>
+      <% if (currentFolder) { %>
+        <a href="/share/folder/<%= currentFolder.id %>/links" class="btn btn-info">
+          <i class="bi bi-share"></i> Share Links
+        </a>
+      <% } %>
+    </div>
+  </div>
+
+  <!-- Folders -->
+  <% if (folders.length > 0) { %>
+    <h5 class="mb-3"><i class="bi bi-folder"></i> Folders</h5>
+    <div class="row g-3 mb-4">
+      <% folders.forEach(folder => { %>
+        <div class="col-md-3">
+          <div class="card folder-item h-100">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start">
+                <a href="/folders?folder=<%= folder.id %>" class="text-decoration-none text-dark flex-grow-1">
+                  <i class="bi bi-folder-fill text-warning" style="font-size: 2rem;"></i>
+                  <h6 class="mt-2 mb-0"><%= folder.name %></h6>
+                </a>
+                <div class="dropdown">
+                  <button class="btn btn-sm btn-link text-dark" type="button" data-bs-toggle="dropdown">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a class="dropdown-item" href="/folders/<%= folder.id %>/edit">
+                        <i class="bi bi-pencil"></i> Rename
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="/share/folder/<%= folder.id %>/links">
+                        <i class="bi bi-share"></i> Share
+                      </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                      <form action="/folders/<%= folder.id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure? This will delete all contents.')">
+                        <button type="submit" class="dropdown-item text-danger">
+                          <i class="bi bi-trash"></i> Delete
+                        </button>
+                      </form>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <small class="text-muted">
+                <%= new Date(folder.createdAt).toLocaleDateString() %>
+              </small>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+
+  <!-- Files -->
+  <% if (files.length > 0) { %>
+    <h5 class="mb-3"><i class="bi bi-file-earmark"></i> Files</h5>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Size</th>
+            <th>Type</th>
+            <th>Uploaded</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% files.forEach(file => { %>
+            <tr>
+              <td>
+                <i class="bi bi-file-earmark-text text-primary"></i>
+                <a href="/files/<%= file.id %>"><%= file.name %></a>
+              </td>
+              <td><%= (file.size / 1024).toFixed(2) %> KB</td>
+              <td><%= file.mimeType %></td>
+              <td><%= new Date(file.createdAt).toLocaleDateString() %></td>
+              <td>
+                <a href="/files/<%= file.id %>/download" class="btn btn-sm btn-primary" title="Download">
+                  <i class="bi bi-download"></i>
+                </a>
+                <form action="/files/<%= file.id %>?_method=DELETE" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this file?')">
+                  <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  <% } %>
+
+  <% if (folders.length === 0 && files.length === 0) { %>
+    <div class="text-center py-5">
+      <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+      <p class="text-muted mt-3">This folder is empty</p>
+    </div>
+  <% } %>
+</div>
+
+<!-- New Folder Modal -->
+<div class="modal fade" id="newFolderModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Create New Folder</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <form action="/folders" method="POST">
+        <div class="modal-body">
+          <input type="hidden" name="parentId" value="<%= currentFolder ? currentFolder.id : '' %>">
+          <div class="mb-3">
+            <label for="folderName" class="form-label">Folder Name</label>
+            <input type="text" class="form-control" id="folderName" name="name" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

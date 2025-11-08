@@ -1,0 +1,77 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-4">
+            <h2 class="card-title">
+              <i class="bi bi-file-earmark-text text-primary"></i>
+              File Details
+            </h2>
+            <div>
+              <a href="/files/<%= file.id %>/download" class="btn btn-primary">
+                <i class="bi bi-download"></i> Download
+              </a>
+              <form action="/files/<%= file.id %>?_method=DELETE" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this file?')">
+                <button type="submit" class="btn btn-danger">
+                  <i class="bi bi-trash"></i> Delete
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <table class="table">
+            <tbody>
+              <tr>
+                <th scope="row" style="width: 200px;">File Name</th>
+                <td><%= file.originalName %></td>
+              </tr>
+              <tr>
+                <th scope="row">File Size</th>
+                <td><%= (file.size / 1024).toFixed(2) %> KB (<%= file.size %> bytes)</td>
+              </tr>
+              <tr>
+                <th scope="row">File Type</th>
+                <td><%= file.mimeType %></td>
+              </tr>
+              <tr>
+                <th scope="row">Upload Date</th>
+                <td><%= new Date(file.createdAt).toLocaleString() %></td>
+              </tr>
+              <tr>
+                <th scope="row">Last Modified</th>
+                <td><%= new Date(file.updatedAt).toLocaleString() %></td>
+              </tr>
+              <tr>
+                <th scope="row">Folder</th>
+                <td>
+                  <% if (file.folder) { %>
+                    <a href="/folders?folder=<%= file.folder.id %>">
+                      <i class="bi bi-folder"></i> <%= file.folder.name %>
+                    </a>
+                  <% } else { %>
+                    <i class="bi bi-house"></i> Root
+                  <% } %>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <!-- Preview for images -->
+          <% if (file.mimeType.startsWith('image/')) { %>
+            <div class="mt-4">
+              <h5>Preview</h5>
+              <img src="<%= file.url %>" alt="<%= file.originalName %>" class="img-fluid rounded" style="max-height: 400px;">
+            </div>
+          <% } %>
+
+          <div class="mt-4">
+            <a href="/folders<%= file.folderId ? '?folder=' + file.folderId : '' %>" class="btn btn-secondary">
+              <i class="bi bi-arrow-left"></i> Back to Folder
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,45 @@
+{
+  "name": "file-uploader",
+  "version": "1.0.0",
+  "description": "A Google Drive-like file storage service",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "check-config": "node check-config.js",
+    "generate-secret": "node generate-secret.js",
+    "db:generate": "npx prisma generate",
+    "db:migrate": "npx prisma migrate dev",
+    "db:studio": "npx prisma studio",
+    "db:reset": "npx prisma migrate reset",
+    "setup": "npm install && npx prisma generate && npm run check-config"
+  },
+  "keywords": [
+    "file-upload",
+    "express",
+    "prisma"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "@quixo3/prisma-session-store": "^3.1.13",
+    "bcryptjs": "^2.4.3",
+    "cloudinary": "^1.41.0",
+    "connect-flash": "^0.1.1",
+    "dotenv": "^16.3.1",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.17.3",
+    "express-validator": "^7.0.1",
+    "method-override": "^3.0.0",
+    "multer": "^1.4.5-lts.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "prisma": "^5.20.0"
+  }
+}

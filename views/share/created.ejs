@@ -1,0 +1,54 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body text-center">
+          <div class="mb-4">
+            <i class="bi bi-check-circle text-success" style="font-size: 4rem;"></i>
+          </div>
+          <h2 class="card-title">Share Link Created!</h2>
+          <p class="text-muted">Your folder "<%= folder.name %>" is now shareable</p>
+
+          <div class="alert alert-info mt-4">
+            <strong>Share Link:</strong>
+            <div class="input-group mt-2">
+              <input type="text" class="form-control" id="shareUrl" value="<%= shareUrl %>" readonly>
+              <button class="btn btn-outline-secondary" type="button" onclick="copyLink()">
+                <i class="bi bi-clipboard"></i> Copy
+              </button>
+            </div>
+          </div>
+
+          <p class="text-muted">
+            <i class="bi bi-clock"></i> This link will expire on: 
+            <strong><%= new Date(expiresAt).toLocaleString() %></strong>
+          </p>
+
+          <div class="mt-4">
+            <a href="/share/folder/<%= folder.id %>/links" class="btn btn-primary">
+              View All Share Links
+            </a>
+            <a href="/folders?folder=<%= folder.id %>" class="btn btn-secondary">
+              Back to Folder
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function copyLink() {
+    const input = document.getElementById('shareUrl');
+    input.select();
+    document.execCommand('copy');
+    
+    const btn = event.target.closest('button');
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-check"></i> Copied!';
+    setTimeout(() => {
+      btn.innerHTML = originalHTML;
+    }, 2000);
+  }
+</script>

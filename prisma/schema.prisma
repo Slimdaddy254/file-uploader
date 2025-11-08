@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  folders Folder[]
+  files   File[]
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+}
+
+model Folder {
+  id        String   @id @default(uuid())
+  name      String
+  userId    String
+  parentId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent       Folder?       @relation("FolderHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  subfolders   Folder[]      @relation("FolderHierarchy")
+  files        File[]
+  sharedLinks  SharedLink[]
+
+  @@index([userId])
+  @@index([parentId])
+}
+
+model File {
+  id          String   @id @default(uuid())
+  name        String
+  originalName String
+  size        Int
+  mimeType    String
+  url         String
+  publicId    String
+  folderId    String?
+  userId      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folder Folder? @relation(fields: [folderId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([folderId])
+}
+
+model SharedLink {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  folderId  String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  folder Folder @relation(fields: [folderId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([folderId])
+}
