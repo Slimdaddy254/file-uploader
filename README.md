@@ -1,6 +1,8 @@
 ﻿# File Uploader - Cloud Storage Application
 
 A full-featured file storage application similar to Google Drive, built with Express.js, Prisma, and Cloudinary. Features include folder management, file uploads, authentication, and shareable links with expiration.
+<img width="1919" height="898" alt="image" src="https://github.com/user-attachments/assets/4abb0510-6fe7-4714-a6f7-83912df0096c" />
+
 
 ## Features
 
@@ -322,4 +324,5 @@ Built as part of The Odin Project curriculum
 ---
 
 **Note**: This is a learning project. For production use, consider additional security measures, error handling, and performance optimizations.
+
 
